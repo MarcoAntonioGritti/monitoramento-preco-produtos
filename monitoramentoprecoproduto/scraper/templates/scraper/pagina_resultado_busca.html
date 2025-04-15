@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos Encontrados</title>
+    <link rel="stylesheet" href="{% static 'scraper/estilo_pagina_busca.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="titulo-container">
+            <h1 class="titulo">PRODUTOS ENCONTRADOS</h1>
+        </div>
+
+        <ul class="lista-produtos">
+            {% for produto in produtos %}
+                <li class="produto">
+                    <strong>{{ produto.titulo }}</strong><br>
+                    Preço: {{ produto.valor }}<br>
+                    <a href="{{ produto.link }}" target="_blank">Ver Produto</a>
+                </li>
+            {% empty %}
+                <li class="nenhum-produto">Nenhum produto encontrado.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
