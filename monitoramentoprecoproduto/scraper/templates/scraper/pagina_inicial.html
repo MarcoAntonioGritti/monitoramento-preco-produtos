@@ -12,20 +12,68 @@
         <div class="container">
             <div class="titulo-container">
                 <h1 class="titulo">SEJA BEM-VINDO!</h1>
-            </div>
+            </div>    
         </div>
     </header>   
 
     <main>
-        <div class="search-container">
-            <form action="{% url 'scrape' %}" method="get">
-                <input type="text" name="q" placeholder="Digite o que deseja buscar...">
-                <button type="submit">Buscar</button>
-            </form>
-        </div>
-    </main>
 
-    <footer>
-    </footer>
+        <div class="search-container">
+            <form id="form-busca" action="{% url 'resultado' %}" method="get">
+              <input type="text" name="valor_buscado" placeholder="Digite o que deseja buscar..." required>
+          
+              <!-- Input oculto para guardar o nome da loja escolhida -->
+              <input type="hidden" name="loja" id="input-loja">
+          
+              <button type="submit" name="botao_de_busca">Buscar</button>
+          
+              <div class="container_logo_lojas">
+                <button type="button" class="quadrado_mercado_livre" onclick="selecionarLoja('mercadolivre')"></button>
+                <button type="button" class="quadrado_buscape" onclick="selecionarLoja('buscape')"></button>
+              </div>
+            </form>
+
+            <div id="carregamento_busca" class="carregamento_busca" style="display: none;"></div>
+        </div>
+          
+
+        <script>
+          const lojasSelecionadas = [];
+        
+          function selecionarLoja(nomeLoja) {
+            const index = lojasSelecionadas.indexOf(nomeLoja);
+        
+            if (index > -1) {
+              lojasSelecionadas.splice(index, 1); // Remove se já estava
+            } else {
+              lojasSelecionadas.push(nomeLoja); // Adiciona se não estava
+            }
+        
+            document.getElementById('input-loja').value = lojasSelecionadas.join(",");
+            console.log("Lojas selecionadas:", lojasSelecionadas);
+          }
+        
+          document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+            const buscarBtn = document.querySelector("button[name='botao_de_busca']");
+            const carregamento = document.getElementById("carregamento_busca");
+        
+            form.addEventListener("submit", function (e) {
+              const clickedButton = document.activeElement;
+              if (clickedButton === buscarBtn) {
+                carregamento.style.display = "block";
+              }
+            });
+        
+            const logos = document.querySelectorAll('.quadrado_mercado_livre, .quadrado_buscape');
+            logos.forEach(logo => {
+              logo.addEventListener('click', () => {
+                logo.classList.toggle('logo-ativa');
+              });
+            });
+          });
+        </script>
+          
+    </main>
 </body>
 </html>

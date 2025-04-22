@@ -1,0 +1,129 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #1d3557;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.titulo-container {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.titulo {
+  font-family: 'Freckle Face', cursive;
+  font-size: 56px;
+  color: #fca311;
+  margin: 0;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  position: relative;
+  display: inline-block;
+}
+
+.lista-produtos {
+  list-style-type: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.produto {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.produto:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.imagem-produto {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.produto strong {
+  font-size: 18px;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.fonte-produto{
+  font-size: 14px;
+  color: #ffe100;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.preco {
+  font-size: 16px;
+  color: #27ae60;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.produto a {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.produto a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.nenhum-produto {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 40px;
+}
+
+.carregando {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #2c3e50;
+  border-bottom-color: #ffffff;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

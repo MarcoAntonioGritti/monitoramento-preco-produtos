@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.urls import path
 
-from . import views
+from .view import pagina_inicial_view, resultado_consulta_view
 
 urlpatterns = [
-    path("scrape/", views.scrape_view, name="scrape"),
-    path("", views.home_page_view, name="home"),
+    path("scrape/", resultado_consulta_view.resultado_view, name="resultado"),
+    path("", pagina_inicial_view.pagina_inicial_view, name="inicio"),
 ]

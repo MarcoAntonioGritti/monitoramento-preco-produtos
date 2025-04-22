@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "scraper",
+    "rest_framework",
     "django.contrib.admin.apps.SimpleAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
