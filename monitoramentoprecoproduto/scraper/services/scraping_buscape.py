@@ -1,7 +1,6 @@
 from decimal import Decimal, InvalidOperation
 from time import sleep
 
-import pandas as pd
 from bs4 import BeautifulSoup
 from scraper.models import Produto
 from selenium import webdriver
@@ -11,81 +10,83 @@ from selenium.webdriver.common.keys import Keys
 
 
 def buscar_produtos_buscape(nome_produto: str):
-    # Excluindo os dados antigos do banco de dados
+    # Limpa os produtos antigos da fonte Buscapé
     Produto.objects.filter(fonte="buscape").delete()
 
-    # Configurações do Selenium para o Chrome
+    # Configurações do navegador (headless + user-agent)
     chrome_options = Options()
-    chrome_options.add_argument("window-size=600,800")
+    chrome_options.add_argument("window-size=1200,1000")
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-    chrome_options.add_argument(
-        "--headless"
-    )  # Argumento que serve para rodar o navegador em segundo plano(opcional)
+    chrome_options.add_argument("--headless")
 
     navegador = webdriver.Chrome(options=chrome_options)
-
-    # Inicia o navegador e acessa o site do Buscapé
     navegador.get("https://www.buscape.com.br/")
-
-    # Aguarda o carregamento da página
     sleep(3)
 
-    # Localiza o campo de busca e insere o nome do produto
-    campo_busca = navegador.find_element(
-        By.CSS_SELECTOR, ("input[data-test='input-search']")
-    )
-    campo_busca.send_keys(nome_produto)
-    campo_busca.send_keys(Keys.ENTER)
-
-    # Obtendo o conteúdo da página
-    pagina_html = BeautifulSoup(navegador.page_source, "html.parser")
-
-    lista_produtos = pagina_html.find_all(
-        "div",
-        class_="Paper_Paper__4XALQ Paper_Paper__bordered__cl5Rh Card_Card__Zd8Ef Card_Card__clicable__ewI68 ProductCard_ProductCard__WWKKW",
-    )
-
-    lista_precos = pagina_html.find_all(
-        "p", class_="Text_Text__ARJdp Text_MobileHeadingS__HEz7L"
-    )
-
-    imagens = pagina_html.select(".ProductCard_ProductCard_Image__4v1sa img")
-
-    for preco_html, produto_html, imagem in zip(lista_precos, lista_produtos, imagens):
-
-        titulo_produto = produto_html.find(
-            "h2",
-            class_="Text_Text__ARJdp Text_MobileLabelXs__dHwGG Text_DesktopLabelSAtLarge__wWsED ProductCard_ProductCard_Name__U_mUQ",
+    # Busca pelo produto
+    try:
+        campo_busca = navegador.find_element(
+            By.CSS_SELECTOR, "input[data-test='input-search']"
         )
+        campo_busca.send_keys(nome_produto)
+        campo_busca.send_keys(Keys.ENTER)
+    except Exception as e:
+        print(f"Erro ao buscar produto: {e}")
+        navegador.quit()
+        return
 
-        preco_texto = preco_html.text
+    sleep(5)  # Dá tempo para a página de resultados carregar completamente
 
-        preco_formatado = (
-            preco_texto.replace("R$", "").replace(".", "").replace(",", ".").strip()
-        )
+    soup = BeautifulSoup(navegador.page_source, "html.parser")
 
-        preco_decimal = Decimal(preco_formatado)
+    produtos_html = soup.select("div.ProductCard_ProductCard__WWKKW")
+    precos_html = soup.select("p.Text_MobileHeadingS__HEz7L")
+    imagens_html = soup.select(".ProductCard_ProductCard_Image__4v1sa img")
 
-        link_elemento = produto_html.find(
-            "a", class_="ProductCard_ProductCard_Inner__gapsh"
-        )
+    for produto_html, preco_html, imagem_html in zip(
+        produtos_html, precos_html, imagens_html
+    ):
+        try:
+            titulo_element = produto_html.select_one(
+                "h2.ProductCard_ProductCard_Name__U_mUQ"
+            )
+            if not titulo_element:
+                continue
+            titulo = titulo_element.text.strip()
 
-        link_completo = "https://www.buscape.com.br" + link_elemento["href"]
-
-        img = imagem["src"]
-
-        if titulo_produto and preco_decimal:
             try:
-                Produto.objects.create(
-                    titulo=titulo_produto.text.strip(),
-                    valor=preco_decimal,
-                    link=link_completo,
-                    imagem_url=img,
-                    fonte="buscape",
+                preco_texto = preco_html.text.strip()
+                preco_formatado = (
+                    preco_texto.replace("R$", "").replace(".", "").replace(",", ".")
                 )
+                valor = Decimal(preco_formatado)
+
             except Exception as e:
-                print(f"Erro ao salvar o produto: {e}")
-            except (InvalidOperation, AttributeError) as e:
-                print(f"Erro ao processar o valor do produto: {e}")
+                print(f"Erro ao processar valor: {e}")
+                valor = Decimal(0)
+                continue
+
+            try:
+                link_element = produto_html.select_one(
+                    "a.ProductCard_ProductCard_Inner__gapsh"
+                )
+                link = "https://www.buscape.com.br" + link_element["href"]
+            except (AttributeError, TypeError):
+                link = ""
+
+            imagem_url = imagem_html.get("src", "") if imagem_html else ""
+
+            Produto.objects.create(
+                titulo=titulo,
+                valor=valor,
+                link=link,
+                imagem_url=imagem_url,
+                fonte="buscape",
+            )
+
+        except (InvalidOperation, AttributeError, TypeError) as e:
+            print(f"Erro ao processar produto: {e}")
+        except Exception as e:
+            print(f"Erro inesperado: {e}")
 
     navegador.quit()

@@ -22,5 +22,6 @@ from monitoramentoprecoproduto.admin import admin_site
 
 urlpatterns = [
     path("admin/", admin_site.urls),
-    path("", include("scraper.urls")),
+    path("scraper/", include("scraper.urls", namespace="scraper")),
+    path("accounts/", include("accounts.urls")),
 ]

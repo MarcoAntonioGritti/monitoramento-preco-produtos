@@ -13,13 +13,15 @@
     </div>
 
     <div class="carregando"></div>
+    
+    <a href="javascript:history.back()" class="seta-voltar">Voltar</a>
 
     <ul class="lista-produtos" style="display: none;">
       {% for produto in produtos %}
         <li class="produto">
           <img class="imagem-produto" src="{{ produto.imagem_url }}" alt="Imagem do Produto">
           <strong class="titulo-produto">{{ produto.titulo }}</strong>
-          <strong class="fonte-de-pesquisa">{{ produto.fonte }}</strong>
+          <p class="fonte-de-pesquisa">{{ produto.fonte }}</p>
           <div class="preco">Preço: {{ produto.valor }}</div>
           <a href="{{ produto.link }}" target="_blank">Ver Produto</a>
         </li>

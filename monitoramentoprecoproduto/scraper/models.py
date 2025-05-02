@@ -10,4 +10,4 @@ class Produto(models.Model):
     fonte = models.CharField(max_length=20, default="")
 
     def __str__(self):
-        return f"{self.titulo} | {self.valor} | {self.link} | {self.data}"
+        return f"{self.titulo} | {self.valor} | {self.link} | {self.data} | {self.imagem_url} | {self.fonte}"

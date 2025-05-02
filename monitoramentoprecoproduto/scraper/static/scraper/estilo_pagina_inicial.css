@@ -30,12 +30,12 @@ body {
   display: inline-block;
 }
 
-.search-container {
+.pesquisa-container {
   text-align: center;
   margin-top: 30px;
 }
 
-.search-container input[type="text"] {
+.pesquisa-container input[type="text"] {
   padding: 12px;
   width: 320px;
   border: 2px solid #457b9d;
@@ -45,11 +45,11 @@ body {
   transition: border-color 0.3s;
 }
 
-.search-container input[type="text"]:focus {
+.pesquisa-container input[type="text"]:focus {
   border-color: #fca311;
 }
 
-.search-container button {
+.pesquisa-container button {
   padding: 12px 24px;
   background-color: #1d3557;
   color: #ffffff;
@@ -61,12 +61,12 @@ body {
   transition: background-color 0.3s;
 }
 
-.search-container button:hover {
+.pesquisa-container button:hover {
   background-color: #fca311;
   color: #1d3557;
 }
 
-.container_logo_lojas {
+.logo_lojas_container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -112,6 +112,70 @@ body {
   border: 4px solid transparent; /* borda invisível por padrão */
   /* resto do seu estilo permanece igual */
 }
+
+.categorias-populares-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px auto;
+  flex-wrap: wrap;
+
+  border: 3px solid #1d3557;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: transparent;
+
+  max-width: 500px;   /* Limita a largura máxima */
+  width: 90%;         /* Responsivo em telas menores */
+}
+
+
+.categorias-populares-container button {
+  width: 100px;
+  height: 100px;  
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.categorias-populares-container button::after {
+  content: attr(data-nome);
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Estilos individuais (com ou sem imagem de fundo) */
+.categoria-moda {
+  background-image: url('images/categoria_moda.png'); 
+}
+
+.categoria-eletronicos {
+  background-image: url('images/categoria_eletronicos.png');
+}
+
+.categoria-casa {
+  background-image: url('images/categoria_casa.png');
+}
+
+.categoria-esportes {
+  background-image: url('images/categoria_esportes.png');
+}
+
+/* Efeito ao passar o mouse */
+.categorias-populares-container button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
 
 .carregamento_busca {
   width: fit-content;

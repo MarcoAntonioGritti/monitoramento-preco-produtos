@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'accounts/estilo_pagina_login.css' %}">
+</head>
+<body>
+    <form action="{% url 'accounts:login' %}" method="POST">
+        <h1 class="titulo_login">Login</h1>
+        {% csrf_token %}
+        {% if message %}
+        <p>{{ message }}</p>
+        {% endif %}
+        <input type="text" name="username" id="username" placeholder="Usuário">
+        <input type="password" name="password" id="password" placeholder="Senha">
+        <input type="submit" value="Entrar">
+    </form>
+</body>
+</html>

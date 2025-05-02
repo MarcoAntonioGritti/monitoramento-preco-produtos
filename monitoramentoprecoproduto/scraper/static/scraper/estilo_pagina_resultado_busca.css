@@ -70,10 +70,10 @@ body {
   margin-bottom: 6px;
 }
 
-.fonte-produto{
-  font-size: 14px;
-  color: #ffe100;
-  margin-bottom: 12px;
+.fonte-de-pesquisa {
+  font-family: 'Freckle Face', cursive;
+  font-size: 15px;
+  color: #1d3557;
   text-align: center;
 }
 
@@ -127,3 +127,17 @@ body {
     transform: rotate(360deg);
   }
 }
+
+ .seta-voltar {
+  margin: 20px;
+  font-family: 'Freckle Face', cursive;
+  font-size: 20px;
+  text-decoration: none;
+  color: #ff9d00;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.seta-voltar:hover {
+  color: #e63946;
+} 
