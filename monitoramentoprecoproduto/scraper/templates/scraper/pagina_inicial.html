@@ -18,7 +18,7 @@
 
         <main>
 
-            <a href=" {% url 'accounts:logout' %} ">Sair</a>
+            <a class="botao_logout" href=" {% url 'accounts:logout' %} ">Sair</a>
 
             <div class="pesquisa-container">
                 <form id="form-busca" action="{% url 'scraper:resultado' %}" method="get">
@@ -31,9 +31,11 @@
             
                     <div class="logo_lojas_container">
                         <button type="button" class="quadrado_mercado_livre" onclick="selecionarLoja('mercadolivre')"></button>
-                        <button type="button    " class="quadrado_buscape" onclick="selecionarLoja('buscape')"></button>
+                        <button type="button" class="quadrado_buscape" onclick="selecionarLoja('buscape')"></button>
                     </div>
 
+                    <h2 class="paragrafo_mais_procurados">Mais Procurados</h2>
+                    
                     <div class="categorias-populares-container">    
                         <button class="categoria-moda" onclick="selecionarCategoria('Moda')"></button>
                         <button class="categoria-eletronicos" onclick="selecionarCategoria('Eletrônicos')"></button>
@@ -43,12 +45,10 @@
 
 
                 </form>
-
                 
-                
-
-                <!-- Div de carregamento -->
+                <button type="button" class="botao_cancelar" onclick="cancelarBusca()"> CANCELAR</button>
                 <div id="carregamento_busca" class="carregamento_busca" style="display: none;"></div>
+
             </div>
         </main>
 
@@ -94,9 +94,15 @@
             });
         
             form.addEventListener("submit", function (e) {
+                if (buscaCancelada) {
+                    e.preventDefault(); // Impede o envio
+                    buscaCancelada = false; // Reseta para o próximo uso
+                    return;
+                }
+            
                 const clickedButton = document.activeElement;
                 if (clickedButton === buscarBtn) {
-                carregamento.style.display = "block";
+                    carregamento.style.display = "block";
                 }
             });
         
@@ -107,6 +113,26 @@
                 });
             });
             });
+
+            let buscaCancelada = false;
+
+            function cancelarBusca() {
+                // Seta flag de cancelamento
+                buscaCancelada = true;
+            
+                // Limpa os campos do formulário
+                document.querySelector("input[name='valor_buscado']").value = "";
+                document.getElementById("input-loja").value = "";
+                document.getElementById("input-categoria").value = "";  
+                lojasSelecionadas.length = 0;
+            
+                // Esconde o carregamento
+                document.getElementById('carregamento_busca').style.display = "none";
+            
+                // Remove destaque visual das lojas
+                const logos = document.querySelectorAll('.logo-ativa');
+                logos.forEach(logo => logo.classList.remove('logo-ativa'));
+            }
         </script>
         
 

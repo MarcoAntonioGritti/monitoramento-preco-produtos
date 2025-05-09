@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from accounts.view.home_redirect_view import home_redirect
 from django.contrib import admin
 from django.urls import include, path
 
@@ -22,6 +23,7 @@ from monitoramentoprecoproduto.admin import admin_site
 
 urlpatterns = [
     path("admin/", admin_site.urls),
+    path("", home_redirect),
     path("scraper/", include("scraper.urls", namespace="scraper")),
-    path("accounts/", include("accounts.urls")),
+    path("accounts/", include("accounts.urls", namespace="accounts")),
 ]

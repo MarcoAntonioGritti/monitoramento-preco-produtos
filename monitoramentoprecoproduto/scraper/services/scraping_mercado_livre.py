@@ -4,24 +4,24 @@ from time import sleep
 from scraper.models import Produto
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 
 
 def buscar_produtos_mercado_livre(nome_produto: str):
     Produto.objects.filter(fonte="mercadolivre").delete()
 
+    # Configurações do navegador (headless + user-agent)
     chrome_options = Options()
-    chrome_options.add_argument("window-size=1200,1000")
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument(
-        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-    )
-
+    chrome_options.add_argument("window-size=500,800")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-software-rasterizer")
+    chrome_options.add_argument("--disable-images")
+    # chrome_options.add_argument("--headless")
     navegador = webdriver.Chrome(options=chrome_options)
 
     navegador.get("https://www.mercadolivre.com.br/")
-    sleep(3)
+    sleep(0.5)
 
     campo_busca = navegador.find_element(By.ID, "cb1-edit")
     campo_busca.send_keys(nome_produto)
@@ -32,9 +32,8 @@ def buscar_produtos_mercado_livre(nome_produto: str):
     # Scrolla aos poucos para carregar as imagens com lazy-load
     for i in range(0, 10):
         navegador.execute_script(f"window.scrollBy(0, {i * 500});")
-        sleep(1)
 
-    sleep(2)
+    sleep(0.5)
 
     produtos_html = navegador.find_elements(By.CLASS_NAME, "ui-search-layout__item")
 

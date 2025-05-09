@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from scraper.models import Produto
 
 from ..services.scraping_buscape import buscar_produtos_buscape
@@ -16,25 +16,18 @@ def pagina_resultado_view(request):
 
         lojas = [loja.strip().lower() for loja in lojas]
 
+        if not termo.strip() or lojas == [""] or lojas == []:
+            return redirect("scraper:inicio")
+
         if "mercadolivre" in lojas:
-            if categoria:
-                termo = categoria
-                buscar_produtos_mercado_livre(termo)
-            else:
-                buscar_produtos_mercado_livre(termo)
+            buscar_produtos_mercado_livre(categoria or termo)   
+
         if "buscape" in lojas:
-            if categoria:
-                termo = categoria
-                buscar_produtos_buscape(termo)
-            else:
-                buscar_produtos_buscape(termo)
-        if not lojas or lojas == [""]:
-            print("Nenhuma loja foi selecionada.")
+            buscar_produtos_buscape(categoria or termo)
 
-        # Filtra os produtos com base nas lojas selecionadas
         produtos_lista = Produto.objects.filter(fonte__in=lojas)
-
         contexto = {"produtos": produtos_lista}
+
     except Exception as e:
         raise Http404(f"Erro: {e}")
 

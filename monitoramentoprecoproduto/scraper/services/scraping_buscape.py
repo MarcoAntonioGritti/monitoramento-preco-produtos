@@ -1,5 +1,6 @@
 from decimal import Decimal, InvalidOperation
 from time import sleep
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 from scraper.models import Produto
@@ -15,13 +16,17 @@ def buscar_produtos_buscape(nome_produto: str):
 
     # Configurações do navegador (headless + user-agent)
     chrome_options = Options()
-    chrome_options.add_argument("window-size=1200,1000")
+    chrome_options.add_argument("window-size=500,800")
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-software-rasterizer")
+    chrome_options.add_argument("--disable-images")
+    # chrome_options.add_argument("--headless")
 
     navegador = webdriver.Chrome(options=chrome_options)
     navegador.get("https://www.buscape.com.br/")
-    sleep(3)
+
+    sleep(0.5)
 
     # Busca pelo produto
     try:
@@ -35,13 +40,15 @@ def buscar_produtos_buscape(nome_produto: str):
         navegador.quit()
         return
 
-    sleep(5)  # Dá tempo para a página de resultados carregar completamente
+    sleep(0.5)  # Dá tempo para a página de resultados carregar completamente
 
     soup = BeautifulSoup(navegador.page_source, "html.parser")
 
     produtos_html = soup.select("div.ProductCard_ProductCard__WWKKW")
     precos_html = soup.select("p.Text_MobileHeadingS__HEz7L")
     imagens_html = soup.select(".ProductCard_ProductCard_Image__4v1sa img")
+
+    produtos = []
 
     for produto_html, preco_html, imagem_html in zip(
         produtos_html, precos_html, imagens_html
@@ -70,13 +77,16 @@ def buscar_produtos_buscape(nome_produto: str):
                 link_element = produto_html.select_one(
                     "a.ProductCard_ProductCard_Inner__gapsh"
                 )
-                link = "https://www.buscape.com.br" + link_element["href"]
+                hrfe = link_element["href"]
+                base_url = "https://www.buscape.com.br"
+                link = urljoin(base_url, hrfe)
+
             except (AttributeError, TypeError):
                 link = ""
 
             imagem_url = imagem_html.get("src", "") if imagem_html else ""
 
-            Produto.objects.create(
+            produto = Produto(
                 titulo=titulo,
                 valor=valor,
                 link=link,
@@ -84,9 +94,13 @@ def buscar_produtos_buscape(nome_produto: str):
                 fonte="buscape",
             )
 
+            produtos.append(produto)
+
         except (InvalidOperation, AttributeError, TypeError) as e:
             print(f"Erro ao processar produto: {e}")
         except Exception as e:
             print(f"Erro inesperado: {e}")
+
+    Produto.objects.bulk_create(produtos, ignore_conflicts=True)
 
     navegador.quit()

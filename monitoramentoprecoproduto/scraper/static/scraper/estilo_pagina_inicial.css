@@ -201,3 +201,32 @@ body {
     clip-path: inset(0 -1ch 0 0);
   }
 }
+
+.botao_logout {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: inline-block;
+  background-color: #fca311; /* dourado vibrante */
+  color: #1d3557; /* azul escuro */
+  padding: 10px 20px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* garante que fique por cima de outros elementos */
+}
+
+.botao_logout:hover {
+  background-color: #1d3557;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.paragrafo_mais_procurados {
+  font-family: 'Freckle Face', cursive; 
+  color: #1d3557;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra abaixo do texto */
+}
